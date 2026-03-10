@@ -3,21 +3,81 @@ let currentDate = new Date();
 let selectedDate = null;
 let editingEventId = null;
 let selectedColor = '#4285f4';
+let googleEvents = [];
+let serverEvents = [];
+
+// 서버 일정 가져오기
+async function fetchServerEvents() {
+    try {
+        const res = await fetch('/events.json?' + Date.now());
+        if (!res.ok) return [];
+        return await res.json();
+    } catch (e) {
+        return [];
+    }
+}
+
+// Google Calendar API 설정
+const GOOGLE_API_KEY = 'AIzaSyASip5CnmphoNdPPmN4Cowmhvr--6KGCfU';
+const GOOGLE_CALENDAR_ID = 'jungjjang2585@gmail.com';
+
+// Google Calendar에서 일정 가져오기
+async function fetchGoogleEvents(year, month) {
+    const timeMin = new Date(year, month, 1).toISOString();
+    const timeMax = new Date(year, month + 1, 0, 23, 59, 59).toISOString();
+    const url = 'https://www.googleapis.com/calendar/v3/calendars/'
+        + encodeURIComponent(GOOGLE_CALENDAR_ID)
+        + '/events?key=' + GOOGLE_API_KEY
+        + '&timeMin=' + timeMin
+        + '&timeMax=' + timeMax
+        + '&singleEvents=true&orderBy=startTime';
+
+    try {
+        const res = await fetch(url);
+        if (!res.ok) return [];
+        const data = await res.json();
+        return (data.items || []).map(item => {
+            const start = item.start.dateTime || item.start.date;
+            const end = item.end.dateTime || item.end.date;
+            const isAllDay = !item.start.dateTime;
+            return {
+                id: 'g_' + item.id,
+                title: item.summary || '(제목 없음)',
+                date: start.substring(0, 10),
+                startTime: isAllDay ? '' : start.substring(11, 16),
+                endTime: isAllDay ? '' : end.substring(11, 16),
+                color: '#34a853',
+                memo: item.description || '',
+                isGoogle: true
+            };
+        });
+    } catch (e) {
+        console.error('Google Calendar 연동 실패:', e);
+        return [];
+    }
+}
 
 // localStorage에서 일정 불러오기
 function loadEvents() {
     const data = localStorage.getItem('calendar-events');
-    return data ? JSON.parse(data) : [];
+    const local = data ? JSON.parse(data) : [];
+    return local.concat(googleEvents).concat(serverEvents);
 }
 
 function saveEvents(events) {
-    localStorage.setItem('calendar-events', JSON.stringify(events));
+    // Google/서버 일정은 제외하고 저장
+    const local = events.filter(e => !e.isGoogle && !e.isServer);
+    localStorage.setItem('calendar-events', JSON.stringify(local));
 }
 
 // === 메인 캘린더 렌더링 ===
-function renderCalendar() {
+async function renderCalendar() {
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
+
+    // 서버 일정 + Google Calendar 일정 가져오기
+    serverEvents = await fetchServerEvents();
+    googleEvents = await fetchGoogleEvents(year, month);
 
     // 헤더 업데이트
     document.getElementById('current-month').textContent =
@@ -90,10 +150,10 @@ function renderCalendar() {
         const maxShow = 3;
         dayEvents.slice(0, maxShow).forEach(event => {
             const bar = document.createElement('div');
-            bar.className = 'event-bar';
+            bar.className = 'event-bar' + (event.isGoogle ? ' google-event' : '');
             bar.style.background = event.color || '#4285f4';
             const timeStr = event.startTime ? event.startTime + ' ' : '';
-            bar.textContent = timeStr + event.title;
+            bar.textContent = (event.isGoogle ? '📅 ' : '') + timeStr + event.title;
             bar.addEventListener('click', (e) => {
                 e.stopPropagation();
                 openEditModal(event);
@@ -197,6 +257,9 @@ function openNewModal(dateStr) {
 }
 
 function openEditModal(event) {
+    if (event.isGoogle || event.isServer) {
+        return;
+    }
     editingEventId = event.id;
     document.getElementById('modal-title').textContent = '일정 수정';
     document.getElementById('event-title').value = event.title;
