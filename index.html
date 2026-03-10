@@ -51,17 +51,18 @@
         }
 
         .profile-avatar {
-            width: 120px;
-            height: 150px;
+            width: 150px;
+            height: 190px;
             border-radius: 12px;
             border: 4px solid #fff;
             margin: -48px auto 12px;
             overflow: hidden;
-            background: linear-gradient(135deg, #a5d6a7, #80cbc4);
+            background: #fff;
             box-shadow: 0 2px 8px rgba(0,0,0,0.12);
         }
 
         .profile-avatar img {
+            width: 100%;
             width: 100%;
             height: 100%;
             object-fit: cover;
@@ -676,9 +677,129 @@
                 gap: 12px;
             }
         }
+        /* ── 인트로 화면 ── */
+        .intro-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .intro-overlay.fade-out {
+            opacity: 0;
+            transform: scale(1.1);
+            pointer-events: none;
+        }
+
+        .intro-overlay.fade-out .intro-character {
+            transform: translateY(-40px);
+            opacity: 0;
+            transition: all 0.5s ease;
+        }
+
+        .intro-overlay.fade-out .intro-greeting,
+        .intro-overlay.fade-out .intro-sub {
+            transform: translateY(-20px);
+            opacity: 0;
+            transition: all 0.4s ease;
+        }
+
+        .intro-overlay.fade-out .intro-btn {
+            transform: scale(1.5);
+            opacity: 0;
+            transition: all 0.5s ease;
+        }
+
+        .intro-character {
+            margin-bottom: 32px;
+        }
+
+        .intro-character img {
+            width: 210px;
+            height: 280px;
+            object-fit: contain;
+        }
+
+        .intro-greeting {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 8px;
+            opacity: 0;
+            animation: fadeUp 0.8s ease 0.3s forwards;
+        }
+
+        .intro-sub {
+            font-size: 1.1rem;
+            color: #888;
+            margin-bottom: 40px;
+            opacity: 0;
+            animation: fadeUp 0.8s ease 0.6s forwards;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .intro-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+            border: none;
+            padding: 16px 44px;
+            font-size: 1.15rem;
+            font-weight: 700;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
+            opacity: 0;
+            animation: fadeUp 0.8s ease 0.9s forwards;
+        }
+
+        .intro-btn:hover {
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: 0 12px 40px rgba(102, 126, 234, 0.5);
+        }
+
+        .intro-btn:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        .site-content {
+            display: none;
+        }
+
+        .site-content.visible {
+            display: block;
+            animation: siteReveal 0.8s ease forwards;
+        }
+
+        @keyframes siteReveal {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
+    <!-- ── 인트로 화면 ── -->
+    <div class="intro-overlay" id="intro">
+        <div class="intro-character">
+            <img src="character.apng" alt="인사하는 캐릭터">
+        </div>
+        <div class="intro-greeting">Hi! I'm Minha</div>
+        <div class="intro-sub">안녕하세요, 반갑습니다.</div>
+        <button class="intro-btn" onclick="enterSite()">민하의 웹사이트</button>
+    </div>
+
+    <!-- ── 기존 사이트 콘텐츠 ── -->
+    <div class="site-content" id="siteContent">
     <div class="layout">
         <!-- ── 좌측 사이드바 ── -->
         <aside class="sidebar">
@@ -1309,6 +1430,19 @@
             } catch (e) {
                 errorEl.textContent = '서버 연결 실패';
             }
+        }
+    </script>
+    </div><!-- /site-content -->
+
+    <script>
+        function enterSite() {
+            const intro = document.getElementById('intro');
+            const site = document.getElementById('siteContent');
+            intro.classList.add('fade-out');
+            setTimeout(() => {
+                intro.style.display = 'none';
+                site.classList.add('visible');
+            }, 800);
         }
     </script>
 </body>
