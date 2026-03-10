@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>캘린더</title>
+    <link rel="stylesheet" href="calendar.css">
+</head>
+<body>
+    <!-- 사이드바 -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <span class="logo-icon">📅</span>
+            <span class="logo-text">캘린더</span>
+        </div>
+        <button class="btn-create" id="btn-create">
+            <span class="plus-icon">+</span> 만들기
+        </button>
+        <!-- 미니 캘린더 -->
+        <div class="mini-calendar">
+            <div class="mini-header">
+                <button class="mini-nav" id="mini-prev">&lt;</button>
+                <span id="mini-month-year"></span>
+                <button class="mini-nav" id="mini-next">&gt;</button>
+            </div>
+            <div class="mini-days-header">
+                <span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span>
+            </div>
+            <div class="mini-days" id="mini-days"></div>
+        </div>
+        <a href="index.html" class="sidebar-link">🎯 성격 테스트</a>
+    </div>
+
+    <!-- 메인 콘텐츠 -->
+    <div class="main">
+        <!-- 상단 헤더 -->
+        <div class="header">
+            <div class="header-left">
+                <button class="btn-today" id="btn-today">오늘</button>
+                <button class="nav-btn" id="prev-month">&lt;</button>
+                <button class="nav-btn" id="next-month">&gt;</button>
+                <h2 class="current-month" id="current-month"></h2>
+            </div>
+            <div class="header-right">
+                <select class="view-select" id="view-select">
+                    <option value="month">월</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- 캘린더 그리드 -->
+        <div class="calendar-grid">
+            <div class="day-headers">
+                <div class="day-header">일</div>
+                <div class="day-header">월</div>
+                <div class="day-header">화</div>
+                <div class="day-header">수</div>
+                <div class="day-header">목</div>
+                <div class="day-header">금</div>
+                <div class="day-header">토</div>
+            </div>
+            <div class="days-grid" id="days-grid"></div>
+        </div>
+    </div>
+
+    <!-- 일정 추가 모달 -->
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="modal-title">새 일정</h3>
+                <button class="modal-close" id="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="text" class="modal-input" id="event-title" placeholder="제목 추가">
+                <div class="modal-row">
+                    <label>날짜</label>
+                    <input type="date" class="modal-input" id="event-date">
+                </div>
+                <div class="modal-row">
+                    <label>시간</label>
+                    <div class="time-inputs">
+                        <input type="time" class="modal-input" id="event-start-time" value="09:00">
+                        <span>~</span>
+                        <input type="time" class="modal-input" id="event-end-time" value="10:00">
+                    </div>
+                </div>
+                <div class="modal-row">
+                    <label>색상</label>
+                    <div class="color-options" id="color-options">
+                        <span class="color-dot selected" data-color="#4285f4" style="background:#4285f4"></span>
+                        <span class="color-dot" data-color="#ea4335" style="background:#ea4335"></span>
+                        <span class="color-dot" data-color="#34a853" style="background:#34a853"></span>
+                        <span class="color-dot" data-color="#fbbc04" style="background:#fbbc04"></span>
+                        <span class="color-dot" data-color="#8e24aa" style="background:#8e24aa"></span>
+                        <span class="color-dot" data-color="#039be5" style="background:#039be5"></span>
+                    </div>
+                </div>
+                <div class="modal-row">
+                    <label>메모</label>
+                    <textarea class="modal-input modal-textarea" id="event-memo" placeholder="메모 추가"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-delete" id="btn-delete" style="display:none">삭제</button>
+                <button class="btn-save" id="btn-save">저장</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="calendar.js"></script>
+</body>
+</html>

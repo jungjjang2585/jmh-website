@@ -1,0 +1,1315 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>장민하 | 포트폴리오</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: "Segoe UI", "Apple SD Gothic Neo", sans-serif;
+            background: #f0f2f5;
+            color: #333;
+            min-height: 100vh;
+        }
+
+        /* ── 전체 레이아웃 ── */
+        .layout {
+            display: flex;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 24px 16px;
+            gap: 24px;
+        }
+
+        /* ── 좌측 사이드바 ── */
+        .sidebar {
+            width: 280px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            position: sticky;
+            top: 24px;
+            align-self: flex-start;
+        }
+
+        .profile-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 32px 24px 24px;
+            text-align: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        .profile-cover {
+            height: 64px;
+            margin: -32px -24px 0 -24px;
+            border-radius: 16px 16px 0 0;
+            background: linear-gradient(135deg, #0a66c2, #00a0dc);
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 150px;
+            border-radius: 12px;
+            border: 4px solid #fff;
+            margin: -48px auto 12px;
+            overflow: hidden;
+            background: linear-gradient(135deg, #a5d6a7, #80cbc4);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+        }
+
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-name {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        .profile-headline {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 4px;
+            line-height: 1.4;
+        }
+
+        .profile-stats {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #eee;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-num {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #0a66c2;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: #888;
+        }
+
+        /* 네비게이션 */
+        .nav-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+            color: #555;
+            font-weight: 500;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+        }
+
+        .nav-item:hover {
+            background: #f0f7ff;
+            color: #0a66c2;
+        }
+
+        .nav-item.active {
+            background: #e8f0fe;
+            color: #0a66c2;
+            font-weight: 600;
+        }
+
+        .nav-icon {
+            width: 20px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        /* ── 우측 콘텐츠 영역 ── */
+        .content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 28px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            margin-bottom: 16px;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-title .icon {
+            font-size: 1.4rem;
+        }
+
+        /* ── About Me ── */
+        .about-text {
+            font-size: 1rem;
+            line-height: 1.9;
+            color: #444;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .info-item .label {
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        .info-item .value {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* ── Skills ── */
+        .skill-category {
+            margin-bottom: 24px;
+        }
+
+        .skill-category:last-child {
+            margin-bottom: 0;
+        }
+
+        .skill-category-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .skill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .skill-tag {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            background: #e8f0fe;
+            color: #0a66c2;
+            transition: all 0.2s;
+        }
+
+        .skill-tag:hover {
+            background: #0a66c2;
+            color: #fff;
+        }
+
+        .skill-bar-item {
+            margin-bottom: 16px;
+        }
+
+        .skill-bar-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .skill-bar-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+        }
+
+        .skill-bar-name {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .skill-bar-pct {
+            font-size: 0.85rem;
+            color: #0a66c2;
+            font-weight: 600;
+        }
+
+        .skill-bar-bg {
+            height: 8px;
+            background: #e8e8e8;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .skill-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            background: linear-gradient(90deg, #0a66c2, #00a0dc);
+            transition: width 0.8s ease;
+            width: 0;
+        }
+
+        /* ── Projects ── */
+        .project-item {
+            display: flex;
+            gap: 20px;
+            padding: 20px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .project-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .project-item:first-child {
+            padding-top: 0;
+        }
+
+        .project-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .project-info h3 {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+        }
+
+        .project-info p {
+            font-size: 0.9rem;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .project-tags {
+            display: flex;
+            gap: 6px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+
+        .project-tag {
+            font-size: 0.78rem;
+            padding: 3px 10px;
+            border-radius: 12px;
+            background: #f0f2f5;
+            color: #666;
+        }
+
+        .project-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-top: 8px;
+            font-size: 0.85rem;
+            color: #0a66c2;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .project-link:hover {
+            text-decoration: underline;
+        }
+
+        /* ── Experience ── */
+        .timeline {
+            position: relative;
+            padding-left: 28px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 6px;
+            bottom: 6px;
+            width: 2px;
+            background: #ddd;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 28px;
+        }
+
+        .timeline-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: -24px;
+            top: 6px;
+            width: 14px;
+            height: 14px;
+            border-radius: 12px;
+            background: #0a66c2;
+            border: 3px solid #e8f0fe;
+        }
+
+        .timeline-date {
+            font-size: 0.8rem;
+            color: #888;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .timeline-title {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .timeline-org {
+            font-size: 0.9rem;
+            color: #0a66c2;
+            margin-bottom: 6px;
+        }
+
+        .timeline-desc {
+            font-size: 0.9rem;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* ── Contact ── */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 16px 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s;
+        }
+
+        .contact-item:hover {
+            background: #e8f0fe;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+        }
+
+        .contact-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: #fff;
+            flex-shrink: 0;
+        }
+
+        .contact-label {
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        .contact-value {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* ── 나의 일상 ── */
+        .daily-post {
+            padding: 20px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .daily-post:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .daily-post:first-child {
+            padding-top: 0;
+        }
+
+        .daily-date {
+            font-size: 0.8rem;
+            color: #888;
+            margin-bottom: 8px;
+        }
+
+        .daily-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 6px;
+        }
+
+        .daily-text {
+            font-size: 0.95rem;
+            color: #555;
+            line-height: 1.7;
+        }
+
+        .daily-tags {
+            display: flex;
+            gap: 6px;
+            margin-top: 10px;
+        }
+
+        .daily-tag {
+            font-size: 0.78rem;
+            padding: 3px 10px;
+            border-radius: 12px;
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        /* ── 업로드 버튼 ── */
+        .upload-btn {
+            padding: 8px 18px;
+            border-radius: 10px;
+            border: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            background: #0a66c2;
+            color: #fff;
+            transition: all 0.2s;
+        }
+
+        .upload-btn:hover {
+            background: #084d94;
+        }
+
+        .upload-btn.cancel {
+            background: #e8e8e8;
+            color: #555;
+        }
+
+        .upload-btn.cancel:hover {
+            background: #ddd;
+        }
+
+        /* ── 자격증/증명서 ── */
+        .doc-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .doc-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 16px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            overflow: hidden;
+        }
+
+        .doc-item:hover {
+            background: #e8f0fe;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+        }
+
+        .doc-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+
+        .doc-icon.pdf { background: #fde8e8; }
+        .doc-icon.img { background: #e8f5e9; }
+        .doc-icon.other { background: #e8f0fe; }
+
+        .doc-name {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .doc-size {
+            font-size: 0.78rem;
+            color: #888;
+        }
+
+        .doc-actions {
+            margin-left: auto;
+            display: flex;
+            gap: 6px;
+        }
+
+        .doc-btn {
+            padding: 5px 12px;
+            border-radius: 8px;
+            border: none;
+            font-size: 0.78rem;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .doc-btn.view {
+            background: #0a66c2;
+            color: #fff;
+        }
+
+        .doc-btn.view:hover {
+            background: #084d94;
+        }
+
+        .doc-btn.download {
+            background: #e8e8e8;
+            color: #555;
+        }
+
+        .doc-btn.download:hover {
+            background: #ddd;
+        }
+
+        /* ── 반응형 ── */
+        @media (max-width: 768px) {
+            .layout {
+                flex-direction: column;
+                padding: 12px;
+            }
+
+            .sidebar {
+                width: 100%;
+                position: static;
+            }
+
+            .nav-card {
+                display: flex;
+                overflow-x: auto;
+                padding: 4px;
+                gap: 4px;
+            }
+
+            .nav-item {
+                white-space: nowrap;
+                padding: 10px 14px;
+                font-size: 0.85rem;
+            }
+
+            .info-grid,
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .project-item {
+                flex-direction: column;
+                gap: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="layout">
+        <!-- ── 좌측 사이드바 ── -->
+        <aside class="sidebar">
+            <div class="profile-card">
+                <div class="profile-cover"></div>
+                <div class="profile-avatar">
+                    <img src="profile.jpg" alt="프로필">
+                </div>
+                <div class="profile-name">장민하</div>
+                <div class="profile-headline">열정과 성장을 추구하는 취업준비생</div>
+                <div class="profile-stats">
+                    <div class="stat">
+                        <div class="stat-num">1</div>
+                        <div class="stat-label">Projects</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-num">3+</div>
+                        <div class="stat-label">Skills</div>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="nav-card">
+                <button class="nav-item active" data-section="about">
+                    <span class="nav-icon">👤</span> About Me
+                </button>
+                <button class="nav-item" data-section="skills">
+                    <span class="nav-icon">🛠</span> Skills
+                </button>
+                <button class="nav-item" data-section="projects">
+                    <span class="nav-icon">💼</span> Projects
+                </button>
+                <button class="nav-item" data-section="experience">
+                    <span class="nav-icon">📋</span> Experience
+                </button>
+                <button class="nav-item" data-section="contact">
+                    <span class="nav-icon">📬</span> Contact
+                </button>
+                <button class="nav-item" data-section="documents">
+                    <span class="nav-icon">📄</span> 자격증/증명서
+                </button>
+                <button class="nav-item" data-section="daily">
+                    <span class="nav-icon">📝</span> 나의 일상
+                </button>
+                <button class="nav-item" data-section="calendar">
+                    <span class="nav-icon">📅</span> 캘린더
+                </button>
+            </nav>
+        </aside>
+
+        <!-- ── 우측 콘텐츠 ── -->
+        <main class="content">
+
+            <!-- About Me -->
+            <section id="about" class="content-section active">
+                <div class="card">
+                    <div class="card-title"><span class="icon">👤</span> About Me</div>
+                    <p class="about-text">
+                        안녕하세요, <strong>장민하</strong>입니다.<br><br>
+                        새로운 기술을 배우고 도전하는 것을 좋아합니다.
+                        AI와 클라우드 기술에 관심을 가지고 꾸준히 학습하고 있으며,
+                        실제 서비스를 만들어보며 성장하고 있습니다.<br><br>
+                        항상 더 나은 방향을 고민하며, 함께 일하는 사람들과 좋은 시너지를 만들어내는 것을 목표로 합니다.
+                    </p>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div>
+                                <div class="label">이름</div>
+                                <div class="value">장민하</div>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <div>
+                                <div class="label">관심 분야</div>
+                                <div class="value">AI / Cloud</div>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <div>
+                                <div class="label">위치</div>
+                                <div class="value">대한민국</div>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <div>
+                                <div class="label">상태</div>
+                                <div class="value">구직 중</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Skills -->
+            <section id="skills" class="content-section">
+                <div class="card">
+                    <div class="card-title"><span class="icon">🛠</span> Skills</div>
+
+                    <div class="skill-category">
+                        <div class="skill-category-title">Proficiency</div>
+                        <div class="skill-bar-item">
+                            <div class="skill-bar-header">
+                                <span class="skill-bar-name">HTML / CSS</span>
+                                <span class="skill-bar-pct">70%</span>
+                            </div>
+                            <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="70"></div></div>
+                        </div>
+                        <div class="skill-bar-item">
+                            <div class="skill-bar-header">
+                                <span class="skill-bar-name">JavaScript</span>
+                                <span class="skill-bar-pct">50%</span>
+                            </div>
+                            <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="50"></div></div>
+                        </div>
+                        <div class="skill-bar-item">
+                            <div class="skill-bar-header">
+                                <span class="skill-bar-name">AWS (EC2, S3)</span>
+                                <span class="skill-bar-pct">40%</span>
+                            </div>
+                            <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="40"></div></div>
+                        </div>
+                    </div>
+
+                    <div class="skill-category">
+                        <div class="skill-category-title">Language</div>
+                        <div class="skill-bar-item">
+                            <div class="skill-bar-header">
+                                <span class="skill-bar-name">TOEIC</span>
+                                <span class="skill-bar-pct">940 / 990</span>
+                            </div>
+                            <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="95"></div></div>
+                        </div>
+                    </div>
+
+                    <div class="skill-category">
+                        <div class="skill-category-title">Certificates</div>
+                        <div class="skill-tags">
+                            <span class="skill-tag">건설안전기사</span>
+                        </div>
+                    </div>
+
+                    <div class="skill-category">
+                        <div class="skill-category-title">Tools & Technologies</div>
+                        <div class="skill-tags">
+                            <span class="skill-tag">Git / GitHub</span>
+                            <span class="skill-tag">AWS EC2</span>
+                            <span class="skill-tag">Nginx</span>
+                            <span class="skill-tag">Claude AI</span>
+                            <span class="skill-tag">Linux</span>
+                            <span class="skill-tag">SSH</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Projects -->
+            <section id="projects" class="content-section">
+                <div class="card">
+                    <div class="card-title"><span class="icon">💼</span> Projects</div>
+
+                    <div class="project-item">
+                        <div class="project-icon" style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9);">🌐</div>
+                        <div class="project-info">
+                            <h3>개인 포트폴리오 웹사이트</h3>
+                            <p>AWS EC2에 Nginx를 설치하고 직접 만든 웹 페이지를 배포한 프로젝트. 서버 구축부터 배포까지 전 과정을 경험했습니다.</p>
+                            <div class="project-tags">
+                                <span class="project-tag">HTML/CSS/JS</span>
+                                <span class="project-tag">AWS EC2</span>
+                                <span class="project-tag">Nginx</span>
+                            </div>
+                            <a href="https://github.com/jungjjang2585/web" target="_blank" class="project-link">GitHub에서 보기 →</a>
+                        </div>
+                    </div>
+
+                    <div class="project-item">
+                        <div class="project-icon" style="background: linear-gradient(135deg, #e3f2fd, #bbdefb);">🎯</div>
+                        <div class="project-info">
+                            <h3>MBTI 성격 테스트</h3>
+                            <p>8개 질문으로 MBTI 성격 유형을 알아볼 수 있는 인터랙티브 웹 앱. JavaScript로 테스트 로직과 결과 시각화를 구현했습니다.</p>
+                            <div class="project-tags">
+                                <span class="project-tag">JavaScript</span>
+                                <span class="project-tag">CSS Animation</span>
+                            </div>
+                            <a href="mbti.html" class="project-link">테스트 해보기 →</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Experience -->
+            <section id="experience" class="content-section">
+                <div class="card">
+                    <div class="card-title"><span class="icon">📋</span> Experience</div>
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-date">2026.03 ~ 현재</div>
+                            <div class="timeline-title">하우스어셔</div>
+                            <div class="timeline-org">국립국악원</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-date">2023.08 ~ 2024.02</div>
+                            <div class="timeline-title">DT데이터제작파트</div>
+                            <div class="timeline-org">카카오 모빌리티</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title"><span class="icon">🎓</span> Education</div>
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-date">2022 ~ 2025.08 (졸업)</div>
+                            <div class="timeline-title">건국대학교</div>
+                            <div class="timeline-org">사회환경공학부 (편입)</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-date">2020.03 ~ 2022</div>
+                            <div class="timeline-title">건국대학교 글로컬캠퍼스</div>
+                            <div class="timeline-org">입학</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Contact -->
+            <section id="contact" class="content-section">
+                <div class="card">
+                    <div class="card-title"><span class="icon">📬</span> Contact</div>
+                    <div class="contact-grid">
+                        <a href="mailto:jangmh1569@naver.com" class="contact-item" target="_blank">
+                            <div class="contact-icon" style="background: #ea4335;">✉</div>
+                            <div>
+                                <div class="contact-label">Email</div>
+                                <div class="contact-value">jangmh1569@naver.com</div>
+                            </div>
+                        </a>
+                        <a href="https://github.com/jungjjang2585" target="_blank" class="contact-item">
+                            <div class="contact-icon" style="background: #333;">⌨</div>
+                            <div>
+                                <div class="contact-label">GitHub</div>
+                                <div class="contact-value">jungjjang2585</div>
+                            </div>
+                        </a>
+                        <a href="https://www.linkedin.com/in/%EB%AF%BC%ED%95%98-%EC%9E%A5-0b9782380/" class="contact-item" target="_blank">
+                            <div class="contact-icon" style="background: #0a66c2;">💼</div>
+                            <div>
+                                <div class="contact-label">LinkedIn</div>
+                                <div class="contact-value">장민하</div>
+                            </div>
+                        </a>
+                        <div class="contact-item">
+                            <div class="contact-icon" style="background: #555;">📍</div>
+                            <div>
+                                <div class="contact-label">Location</div>
+                                <div class="contact-value">대한민국</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 자격증/증명서 -->
+            <section id="documents" class="content-section">
+                <div class="card">
+                    <div class="card-title" style="justify-content: space-between;">
+                        <span><span class="icon">📄</span> 자격증 / 증명서</span>
+                        <button class="upload-btn" onclick="showUploadForm()">파일 올리기</button>
+                    </div>
+
+                    <!-- 업로드 폼 (숨김) -->
+                    <div id="upload-form" style="display:none; margin-bottom: 20px;">
+                        <div style="background:#f8f9fa; border-radius:12px; padding:20px; border:2px dashed #ccc;">
+                            <div style="margin-bottom: 12px;">
+                                <label style="font-size:0.85rem; color:#666; display:block; margin-bottom:6px;">비밀번호</label>
+                                <input type="password" id="upload-pw" placeholder="업로드 비밀번호 입력" style="width:100%; padding:10px 14px; border:1px solid #ddd; border-radius:8px; font-size:0.9rem;">
+                            </div>
+                            <div style="margin-bottom: 12px;">
+                                <label style="font-size:0.85rem; color:#666; display:block; margin-bottom:6px;">파일 선택 (최대 20MB)</label>
+                                <input type="file" id="upload-file" style="width:100%; padding:8px; font-size:0.9rem;">
+                            </div>
+                            <div style="display:flex; gap:8px;">
+                                <button class="upload-btn" onclick="doUpload()" id="upload-submit-btn">업로드</button>
+                                <button class="upload-btn cancel" onclick="hideUploadForm()">취소</button>
+                            </div>
+                            <div id="upload-status" style="margin-top:10px; font-size:0.85rem;"></div>
+                        </div>
+                    </div>
+
+                    <div class="doc-list" id="doc-list"></div>
+                    <div id="doc-empty" style="display:none; text-align: center; padding: 40px 0; color: #aaa;">
+                        등록된 문서가 없습니다.
+                    </div>
+                </div>
+
+                <!-- 문서 미리보기 모달 -->
+                <div id="doc-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:1000; align-items:center; justify-content:center;">
+                    <div style="background:#fff; border-radius:16px; max-width:900px; width:95%; max-height:90vh; overflow:auto; position:relative; padding:20px;">
+                        <button onclick="closeModal()" style="position:absolute; top:12px; right:16px; background:none; border:none; font-size:1.5rem; cursor:pointer; color:#888;">✕</button>
+                        <div id="doc-modal-content" style="text-align:center; padding-top:12px;"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 나의 일상 -->
+            <section id="daily" class="content-section">
+                <div class="card">
+                    <div class="card-title"><span class="icon">📝</span> 나의 일상</div>
+
+                    <div class="daily-post">
+                        <div class="daily-date">2026.03.06</div>
+                        <div class="daily-title">첫 웹사이트를 세상에 공개하다!</div>
+                        <div class="daily-text">
+                            오늘 드디어 AWS EC2에 나만의 웹 페이지를 배포했다.
+                            서버를 직접 만들고, 파일을 올리고, 브라우저에서 내 페이지가 뜨는 순간 정말 뿌듯했다.
+                            아직은 간단한 페이지지만, 여기서부터 시작이다!
+                        </div>
+                        <div class="daily-tags">
+                            <span class="daily-tag">#첫배포</span>
+                            <span class="daily-tag">#AWS</span>
+                            <span class="daily-tag">#성장기록</span>
+                        </div>
+                    </div>
+
+                    <div class="daily-post">
+                        <div class="daily-date">2026.03.06</div>
+                        <div class="daily-title">Claude Code로 작업 자동화 스킬 만들기</div>
+                        <div class="daily-text">
+                            Claude Code의 스킬 기능을 배워서 /work-start와 /work-end 명령어를 만들었다.
+                            이제 매일 작업 시작과 끝에 보고서가 자동으로 작성된다. AI와 함께 일하는 게 점점 익숙해지고 있다.
+                        </div>
+                        <div class="daily-tags">
+                            <span class="daily-tag">#ClaudeCode</span>
+                            <span class="daily-tag">#자동화</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- 캘린더 -->
+            <section id="calendar" class="content-section">
+                <div class="card">
+                    <div class="card-title"><span class="icon">📅</span> 캘린더</div>
+                    <div id="calendar-lock" style="text-align:center; padding:40px 0;">
+                        <div style="font-size:2rem; margin-bottom:12px;">🔒</div>
+                        <p style="font-size:0.9rem; color:#666; margin-bottom:16px;">비공개 캘린더입니다. 비밀번호를 입력하세요.</p>
+                        <input type="password" id="calendar-pw" placeholder="비밀번호 입력" style="width:240px; padding:10px 14px; border:1px solid #ddd; border-radius:8px; font-size:0.9rem; text-align:center;">
+                        <br>
+                        <button onclick="unlockCalendar()" style="margin-top:12px; padding:10px 28px; background:#0a66c2; color:#fff; border:none; border-radius:10px; font-size:0.9rem; font-weight:600; cursor:pointer;">확인</button>
+                        <p id="calendar-pw-error" style="margin-top:10px; font-size:0.85rem; color:#e74c3c;"></p>
+                    </div>
+                    <div id="calendar-content" style="display:none;">
+                        <iframe src="https://calendar.google.com/calendar/embed?src=jungjjang2585%40gmail.com&ctz=Asia%2FSeoul&mode=MONTH" style="border:none; width:100%; height:600px; border-radius:12px;"></iframe>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        // 네비게이션
+        const navItems = document.querySelectorAll('.nav-item');
+        const sections = document.querySelectorAll('.content-section');
+
+        navItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const target = item.dataset.section;
+
+                navItems.forEach(n => n.classList.remove('active'));
+                item.classList.add('active');
+
+                sections.forEach(s => s.classList.remove('active'));
+                document.getElementById(target).classList.add('active');
+
+                // 스킬 바 애니메이션
+                if (target === 'skills') {
+                    animateSkillBars();
+                }
+            });
+        });
+
+        // 스킬 바 애니메이션
+        function animateSkillBars() {
+            document.querySelectorAll('.skill-bar-fill').forEach(bar => {
+                bar.style.width = '0';
+                setTimeout(() => {
+                    bar.style.width = bar.dataset.width + '%';
+                }, 100);
+            });
+        }
+
+        // ── 자격증/증명서 기능 ──
+        let docFiles = [];
+
+        function getFileExt(filename) {
+            return filename.split('.').pop().toLowerCase();
+        }
+
+        function getDocIcon(ext) {
+            if (ext === 'pdf') return { emoji: '📕', cls: 'pdf' };
+            if (['jpg','jpeg','png','gif','webp'].includes(ext)) return { emoji: '🖼', cls: 'img' };
+            return { emoji: '📎', cls: 'other' };
+        }
+
+        function formatSize(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+            return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+        }
+
+        async function loadDocList() {
+            try {
+                const res = await fetch('/api/docs');
+                const data = await res.json();
+                docFiles = data.files || [];
+                renderDocList();
+            } catch (e) {
+                docFiles = [];
+                renderDocList();
+            }
+        }
+
+        function renderDocList() {
+            const list = document.getElementById('doc-list');
+            const empty = document.getElementById('doc-empty');
+
+            if (docFiles.length === 0) {
+                list.style.display = 'none';
+                empty.style.display = 'block';
+                return;
+            }
+
+            empty.style.display = 'none';
+            list.style.display = 'grid';
+            list.innerHTML = docFiles.map((doc, i) => {
+                const ext = getFileExt(doc.name);
+                const icon = getDocIcon(ext);
+                return `
+                    <div class="doc-item">
+                        <div class="doc-icon ${icon.cls}">${icon.emoji}</div>
+                        <div style="flex:1; min-width:0;">
+                            <div class="doc-name" style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${doc.name}</div>
+                            <div class="doc-size">${ext.toUpperCase()} · ${formatSize(doc.size)}</div>
+                        </div>
+                        <div class="doc-actions">
+                            <button class="doc-btn view" onclick="viewDoc(${i})">보기</button>
+                            <a href="docs/${encodeURIComponent(doc.name)}" download class="doc-btn download" onclick="event.stopPropagation()">저장</a>
+                            <button class="doc-btn download" onclick="deleteDoc(${i})" title="삭제">✕</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function viewDoc(index) {
+            const doc = docFiles[index];
+            const modal = document.getElementById('doc-modal');
+            const content = document.getElementById('doc-modal-content');
+
+            // 비밀번호 입력 화면 표시
+            content.innerHTML = `
+                <div style="padding: 20px;">
+                    <div style="font-size:2rem; margin-bottom:12px;">🔒</div>
+                    <p style="font-size:1rem; font-weight:600; margin-bottom:16px;">${doc.name}</p>
+                    <p style="font-size:0.9rem; color:#666; margin-bottom:16px;">민감한 문서입니다. 열람 비밀번호를 입력하세요.</p>
+                    <input type="password" id="view-pw" placeholder="비밀번호 입력" style="width:240px; padding:10px 14px; border:1px solid #ddd; border-radius:8px; font-size:0.9rem; text-align:center;">
+                    <br>
+                    <button onclick="verifyAndView(${index})" style="margin-top:12px; padding:10px 28px; background:#0a66c2; color:#fff; border:none; border-radius:10px; font-size:0.9rem; font-weight:600; cursor:pointer;">확인</button>
+                    <p id="view-pw-error" style="margin-top:10px; font-size:0.85rem; color:#e74c3c;"></p>
+                </div>
+            `;
+            modal.style.display = 'flex';
+
+            setTimeout(() => {
+                const pwInput = document.getElementById('view-pw');
+                pwInput.focus();
+                pwInput.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') verifyAndView(index);
+                });
+            }, 100);
+        }
+
+        async function verifyAndView(index) {
+            const doc = docFiles[index];
+            const ext = getFileExt(doc.name);
+            const url = 'docs/' + encodeURIComponent(doc.name);
+            const pw = document.getElementById('view-pw').value;
+            const errorEl = document.getElementById('view-pw-error');
+
+            if (!pw) { errorEl.textContent = '비밀번호를 입력해주세요.'; return; }
+
+            // 서버에 비밀번호 검증 요청
+            try {
+                const res = await fetch('/api/verify', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password: pw })
+                });
+                if (!res.ok) {
+                    errorEl.textContent = '비밀번호가 틀렸습니다.';
+                    return;
+                }
+            } catch (e) {
+                errorEl.textContent = '서버 연결 실패';
+                return;
+            }
+
+            const content = document.getElementById('doc-modal-content');
+            if (ext === 'pdf') {
+                content.innerHTML = `<iframe src="${url}" style="width:100%; height:80vh; border:none; border-radius:8px;"></iframe>`;
+            } else if (['jpg','jpeg','png','gif','webp'].includes(ext)) {
+                content.innerHTML = `<img src="${url}" style="max-width:100%; max-height:80vh; border-radius:8px;" alt="${doc.name}">`;
+            } else {
+                content.innerHTML = `<p>이 파일은 미리보기를 지원하지 않습니다.</p><a href="${url}" download style="display:inline-block; margin-top:12px; padding:10px 24px; background:#0a66c2; color:#fff; border-radius:10px; text-decoration:none;">다운로드</a>`;
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('doc-modal').style.display = 'none';
+            document.getElementById('doc-modal-content').innerHTML = '';
+        }
+
+        document.getElementById('doc-modal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        // 업로드 폼
+        function showUploadForm() {
+            document.getElementById('upload-form').style.display = 'block';
+            document.getElementById('upload-status').textContent = '';
+        }
+
+        function hideUploadForm() {
+            document.getElementById('upload-form').style.display = 'none';
+        }
+
+        async function doUpload() {
+            const pw = document.getElementById('upload-pw').value;
+            const fileInput = document.getElementById('upload-file');
+            const status = document.getElementById('upload-status');
+            const btn = document.getElementById('upload-submit-btn');
+
+            if (!pw) { status.textContent = '비밀번호를 입력해주세요.'; status.style.color = '#e74c3c'; return; }
+            if (!fileInput.files.length) { status.textContent = '파일을 선택해주세요.'; status.style.color = '#e74c3c'; return; }
+
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+
+            btn.disabled = true;
+            btn.textContent = '업로드 중...';
+            status.textContent = '';
+
+            try {
+                const res = await fetch('/api/upload', {
+                    method: 'POST',
+                    headers: { 'X-Password': pw },
+                    body: formData
+                });
+                const data = await res.json();
+
+                if (res.ok) {
+                    status.textContent = '업로드 완료!';
+                    status.style.color = '#2e7d32';
+                    fileInput.value = '';
+                    await loadDocList();
+                    setTimeout(hideUploadForm, 1500);
+                } else {
+                    status.textContent = data.error || '업로드 실패';
+                    status.style.color = '#e74c3c';
+                }
+            } catch (e) {
+                status.textContent = '서버 연결 실패';
+                status.style.color = '#e74c3c';
+            }
+
+            btn.disabled = false;
+            btn.textContent = '업로드';
+        }
+
+        async function deleteDoc(index) {
+            const doc = docFiles[index];
+            const pw = prompt('삭제하려면 비밀번호를 입력하세요:');
+            if (!pw) return;
+
+            try {
+                const res = await fetch('/api/docs/' + encodeURIComponent(doc.name), {
+                    method: 'DELETE',
+                    headers: { 'X-Password': pw }
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    await loadDocList();
+                } else {
+                    alert(data.error || '삭제 실패');
+                }
+            } catch (e) {
+                alert('서버 연결 실패');
+            }
+        }
+
+        loadDocList();
+
+        // 캘린더 잠금 해제
+        document.getElementById('calendar-pw').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') unlockCalendar();
+        });
+
+        async function unlockCalendar() {
+            const pw = document.getElementById('calendar-pw').value;
+            const errorEl = document.getElementById('calendar-pw-error');
+            if (!pw) { errorEl.textContent = '비밀번호를 입력해주세요.'; return; }
+
+            try {
+                const res = await fetch('/api/verify', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password: pw })
+                });
+                if (!res.ok) {
+                    errorEl.textContent = '비밀번호가 틀렸습니다.';
+                    return;
+                }
+                document.getElementById('calendar-lock').style.display = 'none';
+                document.getElementById('calendar-content').style.display = 'block';
+            } catch (e) {
+                errorEl.textContent = '서버 연결 실패';
+            }
+        }
+    </script>
+</body>
+</html>

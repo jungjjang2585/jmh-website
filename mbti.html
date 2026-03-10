@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MBTI 성격 테스트 | 장민하</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div id="start-screen" class="screen active">
+            <h1>🎯 성격 테스트</h1>
+            <p class="subtitle">8개의 간단한 질문으로<br>나의 MBTI 유형을 알아보세요!</p>
+            <button id="start-btn" class="btn-primary">시작하기</button>
+        </div>
+
+        <div id="quiz-screen" class="screen">
+            <div class="progress-bar">
+                <div id="progress-fill" class="progress-fill"></div>
+            </div>
+            <p id="question-number" class="question-number"></p>
+            <p id="question-text" class="question-text"></p>
+            <div class="options">
+                <button id="option-a" class="option-btn"></button>
+                <button id="option-b" class="option-btn"></button>
+            </div>
+        </div>
+
+        <div id="result-screen" class="screen">
+            <h2>당신의 성격 유형은</h2>
+            <div id="result-type" class="result-type"></div>
+            <p id="result-desc" class="result-desc"></p>
+            <div id="result-detail" class="result-detail"></div>
+            <button id="retry-btn" class="btn-primary">다시 하기</button>
+            <br><br>
+            <a href="index.html" style="color: #667eea; text-decoration: none; font-weight: 500;">← 돌아가기</a>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
