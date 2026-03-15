@@ -28,6 +28,9 @@
             </div>
             <div class="mini-days" id="mini-days"></div>
         </div>
+        <button class="btn-saved-list" id="btn-saved-list">
+            <span>📋</span> 지원 기업 목록 <span class="saved-count" id="saved-count">0</span>
+        </button>
         <a href="index.html" class="sidebar-link">🎯 성격 테스트</a>
     </div>
 
@@ -103,6 +106,29 @@
             <div class="modal-footer">
                 <button class="btn-delete" id="btn-delete" style="display:none">삭제</button>
                 <button class="btn-save" id="btn-save">저장</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 지원 기업 목록 모달 -->
+    <div class="modal-overlay" id="saved-modal-overlay">
+        <div class="modal saved-modal">
+            <div class="modal-header">
+                <h3>📋 지원 기업 목록</h3>
+                <button class="modal-close" id="saved-modal-close">&times;</button>
+            </div>
+            <div class="modal-body" id="saved-list-body">
+                <p class="empty-msg" id="saved-empty">저장된 기업이 없습니다.</p>
+                <table class="saved-table" id="saved-table" style="display:none">
+                    <thead>
+                        <tr>
+                            <th>기업/공고명</th>
+                            <th>마감일</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="saved-table-body"></tbody>
+                </table>
             </div>
         </div>
     </div>

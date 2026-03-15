@@ -6,6 +6,48 @@ let selectedColor = '#4285f4';
 let googleEvents = [];
 let serverEvents = [];
 
+// === 지원 기업 목록 관리 ===
+function loadSavedCompanies() {
+    const data = localStorage.getItem('saved-companies');
+    return data ? JSON.parse(data) : [];
+}
+
+function saveSavedCompanies(list) {
+    localStorage.setItem('saved-companies', JSON.stringify(list));
+    updateSavedCount();
+}
+
+function addSavedCompany(title, date) {
+    const list = loadSavedCompanies();
+    // 중복 방지: 같은 제목 + 같은 마감일이면 추가하지 않음
+    if (list.some(c => c.title === title && c.date === date)) return false;
+    list.push({ title, date, addedAt: new Date().toISOString() });
+    saveSavedCompanies(list);
+    return true;
+}
+
+function removeSavedCompany(index) {
+    const list = loadSavedCompanies();
+    list.splice(index, 1);
+    saveSavedCompanies(list);
+}
+
+function isSavedCompany(title, date) {
+    return loadSavedCompanies().some(c => c.title === title && c.date === date);
+}
+
+function updateSavedCount() {
+    const count = loadSavedCompanies().length;
+    document.getElementById('saved-count').textContent = count;
+}
+
+function isExpiredDate(dateStr) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const d = new Date(dateStr + 'T23:59:59');
+    return d < today;
+}
+
 // 서버 일정 가져오기
 async function fetchServerEvents() {
     try {
@@ -150,7 +192,8 @@ async function renderCalendar() {
         const maxShow = 3;
         dayEvents.slice(0, maxShow).forEach(event => {
             const bar = document.createElement('div');
-            bar.className = 'event-bar' + (event.isGoogle ? ' google-event' : '');
+            const expired = isExpiredDate(event.date);
+            bar.className = 'event-bar' + (event.isGoogle ? ' google-event' : '') + (expired ? ' expired' : '');
             bar.style.background = event.color || '#4285f4';
             const timeStr = event.startTime ? event.startTime + ' ' : '';
             bar.textContent = (event.isGoogle ? '📅 ' : '') + timeStr + event.title;
@@ -159,6 +202,23 @@ async function renderCalendar() {
                 openEditModal(event);
             });
             cell.appendChild(bar);
+
+            // 마감된 일정에 "지원 기업에 추가" 버튼
+            if (expired) {
+                const addBtn = document.createElement('button');
+                const alreadySaved = isSavedCompany(event.title, event.date);
+                addBtn.className = 'btn-add-saved' + (alreadySaved ? ' added' : '');
+                addBtn.textContent = alreadySaved ? '✓ 추가됨' : '+ 지원기업 추가';
+                addBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (alreadySaved) return;
+                    if (addSavedCompany(event.title, event.date)) {
+                        addBtn.textContent = '✓ 추가됨';
+                        addBtn.classList.add('added');
+                    }
+                });
+                cell.appendChild(addBtn);
+            }
         });
 
         if (dayEvents.length > maxShow) {
@@ -392,6 +452,54 @@ document.getElementById('event-title').addEventListener('keydown', (e) => {
     if (e.key === 'Enter') saveEvent();
 });
 
+// === 지원 기업 목록 모달 ===
+function openSavedModal() {
+    const list = loadSavedCompanies();
+    const tbody = document.getElementById('saved-table-body');
+    const table = document.getElementById('saved-table');
+    const empty = document.getElementById('saved-empty');
+
+    tbody.innerHTML = '';
+
+    if (list.length === 0) {
+        table.style.display = 'none';
+        empty.style.display = 'block';
+    } else {
+        table.style.display = 'table';
+        empty.style.display = 'none';
+        list.forEach((company, idx) => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${company.title}</td>
+                <td>${company.date}</td>
+                <td><button class="btn-remove-saved" data-idx="${idx}">삭제</button></td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+        tbody.querySelectorAll('.btn-remove-saved').forEach(btn => {
+            btn.addEventListener('click', () => {
+                removeSavedCompany(parseInt(btn.dataset.idx));
+                openSavedModal(); // 새로고침
+                renderCalendar(); // 버튼 상태 업데이트
+            });
+        });
+    }
+
+    document.getElementById('saved-modal-overlay').classList.add('active');
+}
+
+function closeSavedModal() {
+    document.getElementById('saved-modal-overlay').classList.remove('active');
+}
+
+document.getElementById('btn-saved-list').addEventListener('click', openSavedModal);
+document.getElementById('saved-modal-close').addEventListener('click', closeSavedModal);
+document.getElementById('saved-modal-overlay').addEventListener('click', (e) => {
+    if (e.target === e.currentTarget) closeSavedModal();
+});
+
 // === 초기 렌더링 ===
+updateSavedCount();
 renderCalendar();
 renderMiniCalendar();

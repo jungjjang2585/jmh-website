@@ -949,6 +949,9 @@
                 <button class="nav-item" data-section="recruit">
                     <span class="nav-icon">🏢</span> 채용 일정
                 </button>
+                <button class="nav-item" data-section="saved-companies">
+                    <span class="nav-icon">📋</span> 지원 기업 목록 <span id="saved-badge" style="background:#ea4335; color:#fff; border-radius:10px; padding:1px 7px; font-size:0.7rem; margin-left:4px;">0</span>
+                </button>
             </nav>
         </aside>
 
@@ -1367,6 +1370,34 @@
                         }
                     }
 
+                    // === 지원 기업 목록 (localStorage) ===
+                    function loadSavedCompanies() {
+                        try { return JSON.parse(localStorage.getItem('saved-companies') || '[]'); } catch(e) { return []; }
+                    }
+                    function saveSavedCompanies(list) {
+                        localStorage.setItem('saved-companies', JSON.stringify(list));
+                        updateSavedBadge();
+                    }
+                    function isSaved(title, date) {
+                        return loadSavedCompanies().some(c => c.title === title && c.date === date);
+                    }
+                    function addCompany(title, date, memo, link) {
+                        const list = loadSavedCompanies();
+                        if (list.some(c => c.title === title && c.date === date)) return false;
+                        list.push({ title: title, date: date, memo: memo || '', link: link || '' });
+                        saveSavedCompanies(list);
+                        return true;
+                    }
+                    function removeCompany(idx) {
+                        const list = loadSavedCompanies();
+                        list.splice(idx, 1);
+                        saveSavedCompanies(list);
+                    }
+                    function updateSavedBadge() {
+                        const badge = document.getElementById('saved-badge');
+                        if (badge) badge.textContent = loadSavedCompanies().length;
+                    }
+
                     function renderRecruitList() {
                         const container = document.getElementById('recruit-events');
                         container.innerHTML = '';
@@ -1378,29 +1409,162 @@
                             const dday = Math.ceil((new Date(ev.date) - new Date(today)) / 86400000);
                             const ddayText = dday === 0 ? 'D-Day' : dday > 0 ? 'D-' + dday : '마감';
                             const div = document.createElement('div');
-                            div.style.cssText = 'display:flex; align-items:center; justify-content:space-between; padding:12px 16px; border-radius:10px; background:' + (isPast ? '#f5f5f5' : '#fff5f5') + '; border:1px solid ' + (isPast ? '#eee' : '#ffcdd2') + ';' + (isPast ? 'opacity:0.5;' : '') + (ev.link ? 'cursor:pointer; transition:transform 0.15s;' : '');
+                            div.style.cssText = 'display:flex; align-items:center; justify-content:space-between; padding:12px 16px; border-radius:10px; background:' + (isPast ? '#f5f5f5' : '#fff5f5') + '; border:1px solid ' + (isPast ? '#eee' : '#ffcdd2') + ';' + (isPast ? '' : '') + (ev.link ? 'cursor:pointer; transition:transform 0.15s;' : '');
                             if (ev.link) {
                                 div.onmouseenter = function() { this.style.transform='translateX(4px)'; };
                                 div.onmouseleave = function() { this.style.transform='none'; };
                                 div.onclick = function() { window.open(ev.link, '_blank'); };
                             }
+
+                            // 마감된 공고에 "지원 기업에 추가" 버튼
+                            var addBtnHtml = '';
+                            if (isPast) {
+                                var already = isSaved(ev.title, ev.date);
+                                addBtnHtml = '<button onclick="event.stopPropagation(); handleAddCompany(this, \'' + ev.title.replace(/'/g, "\\'") + '\', \'' + ev.date + '\', \'' + (ev.memo || '').replace(/'/g, "\\'") + '\', \'' + (ev.link || '').replace(/'/g, "\\'") + '\')" style="background:' + (already ? '#aaa' : '#1967d2') + '; color:#fff; border:none; border-radius:6px; padding:6px 12px; font-size:0.78rem; cursor:' + (already ? 'default' : 'pointer') + '; white-space:nowrap; margin-left:10px; font-family:inherit;">' + (already ? '✓ 추가됨' : '+ 지원기업 추가') + '</button>';
+                            }
+
                             div.innerHTML = '<div style="flex:1; min-width:0;"><strong style="color:#333;">' + ev.title + '</strong>'
                                 + '<div style="font-size:0.85rem; color:#888; margin-top:4px;">' + ev.date + (ev.startTime ? ' ' + ev.startTime : '') + (ev.memo ? ' · ' + ev.memo : '') + '</div>'
                                 + (ev.link ? '<div style="font-size:0.8rem; color:#0a66c2; margin-top:4px;">채용공고 보기 &rarr;</div>' : '')
                                 + '</div>'
+                                + addBtnHtml
                                 + '<span style="font-weight:700; color:' + (isPast ? '#aaa' : ev.color || '#ea4335') + '; font-size:0.95rem; white-space:nowrap; margin-left:12px;">' + ddayText + '</span>';
                             container.appendChild(div);
                         });
                     }
 
+                    function handleAddCompany(btn, title, date, memo, link) {
+                        if (isSaved(title, date)) return;
+                        if (addCompany(title, date, memo, link)) {
+                            btn.textContent = '✓ 추가됨';
+                            btn.style.background = '#aaa';
+                            btn.style.cursor = 'default';
+                        }
+                    }
+
+                    updateSavedBadge();
                     initRecruitCal();
                 </script>
+            </section>
+
+            <!-- 지원 기업 목록 -->
+            <section id="saved-companies" class="content-section">
+                <div class="card">
+                    <div class="card-title"><span class="icon">📋</span> 지원 기업 목록</div>
+                    <p style="font-size:0.85rem; color:#888; margin-bottom:16px;">마감된 채용 공고에서 "지원기업 추가" 버튼을 누르면 여기에 저장됩니다.</p>
+                    <div id="saved-list-container"></div>
+                </div>
+
+                <!-- 향후 지원하고 싶은 기업 -->
+                <div class="card" style="margin-top:16px;">
+                    <div class="card-title"><span class="icon">🎯</span> 향후 지원하고 싶은 기업</div>
+                    <div style="display:flex; gap:8px; margin-bottom:16px;">
+                        <input type="text" id="wishlist-input" placeholder="기업 이름 입력" style="flex:1; padding:10px 14px; border:1px solid #ddd; border-radius:8px; font-size:0.9rem; font-family:inherit;">
+                        <button onclick="addWishCompany()" style="background:#0a66c2; color:#fff; border:none; border-radius:8px; padding:10px 20px; font-size:0.9rem; cursor:pointer; font-weight:600; white-space:nowrap; font-family:inherit;">추가</button>
+                    </div>
+                    <div id="wishlist-container"></div>
+                </div>
             </section>
 
         </main>
     </div>
 
     <script>
+        // 지원 기업 목록 렌더링
+        function renderSavedList() {
+            const container = document.getElementById('saved-list-container');
+            if (!container) return;
+            const list = JSON.parse(localStorage.getItem('saved-companies') || '[]');
+
+            if (list.length === 0) {
+                container.innerHTML = '<div style="text-align:center; color:#aaa; padding:30px 0;">저장된 기업이 없습니다.</div>';
+                return;
+            }
+
+            let html = '<table style="width:100%; border-collapse:collapse; font-size:0.9rem;">'
+                + '<thead><tr style="border-bottom:2px solid #e0e0e0;">'
+                + '<th style="text-align:left; padding:10px; color:#666; font-weight:600;">기업/공고명</th>'
+                + '<th style="text-align:left; padding:10px; color:#666; font-weight:600;">마감일</th>'
+                + '<th style="text-align:left; padding:10px; color:#666; font-weight:600;">메모</th>'
+                + '<th style="padding:10px; width:60px;"></th>'
+                + '</tr></thead><tbody>';
+
+            list.forEach(function(c, idx) {
+                html += '<tr style="border-bottom:1px solid #f0f0f0;">'
+                    + '<td style="padding:12px 10px;">'
+                    + (c.link ? '<a href="' + c.link + '" target="_blank" style="color:#0a66c2; text-decoration:none; font-weight:500;">' + c.title + ' ↗</a>' : '<span style="font-weight:500;">' + c.title + '</span>')
+                    + '</td>'
+                    + '<td style="padding:12px 10px; color:#888;">' + c.date + '</td>'
+                    + '<td style="padding:12px 10px; color:#888; font-size:0.85rem;">' + (c.memo || '-') + '</td>'
+                    + '<td style="padding:12px 10px; text-align:center;"><button onclick="removeSavedCompany(' + idx + ')" style="background:none; border:1px solid #ddd; border-radius:6px; color:#ea4335; padding:4px 10px; font-size:0.8rem; cursor:pointer; font-family:inherit;">삭제</button></td>'
+                    + '</tr>';
+            });
+
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        function removeSavedCompany(idx) {
+            var list = JSON.parse(localStorage.getItem('saved-companies') || '[]');
+            list.splice(idx, 1);
+            localStorage.setItem('saved-companies', JSON.stringify(list));
+            var badge = document.getElementById('saved-badge');
+            if (badge) badge.textContent = list.length;
+            renderSavedList();
+        }
+
+        // 향후 지원하고 싶은 기업 목록
+        function loadWishlist() {
+            try { return JSON.parse(localStorage.getItem('wish-companies') || '[]'); } catch(e) { return []; }
+        }
+        function saveWishlist(list) {
+            localStorage.setItem('wish-companies', JSON.stringify(list));
+        }
+        function addWishCompany() {
+            var input = document.getElementById('wishlist-input');
+            var name = input.value.trim();
+            if (!name) { input.focus(); return; }
+            var list = loadWishlist();
+            if (list.some(function(c) { return c.name === name; })) {
+                alert('이미 추가된 기업입니다.');
+                return;
+            }
+            list.push({ name: name, addedAt: new Date().toISOString().slice(0, 10) });
+            saveWishlist(list);
+            input.value = '';
+            renderWishlist();
+        }
+        function removeWishCompany(idx) {
+            var list = loadWishlist();
+            list.splice(idx, 1);
+            saveWishlist(list);
+            renderWishlist();
+        }
+        function renderWishlist() {
+            var container = document.getElementById('wishlist-container');
+            if (!container) return;
+            var list = loadWishlist();
+            if (list.length === 0) {
+                container.innerHTML = '<div style="text-align:center; color:#aaa; padding:20px 0;">등록된 기업이 없습니다.</div>';
+                return;
+            }
+            var html = '<div style="display:flex; flex-direction:column; gap:8px;">';
+            list.forEach(function(c, idx) {
+                html += '<div style="display:flex; align-items:center; justify-content:space-between; padding:10px 14px; background:#f8f9fa; border-radius:8px; border:1px solid #e8e8e8;">'
+                    + '<div><span style="font-weight:600; color:#333;">🏢 ' + c.name + '</span>'
+                    + '<span style="font-size:0.8rem; color:#aaa; margin-left:10px;">추가: ' + c.addedAt + '</span></div>'
+                    + '<button onclick="removeWishCompany(' + idx + ')" style="background:none; border:1px solid #ddd; border-radius:6px; color:#ea4335; padding:4px 10px; font-size:0.8rem; cursor:pointer; font-family:inherit;">삭제</button>'
+                    + '</div>';
+            });
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        // Enter 키로 추가
+        document.getElementById('wishlist-input').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') addWishCompany();
+        });
+
         // 네비게이션
         const navItems = document.querySelectorAll('.nav-item');
         const sections = document.querySelectorAll('.content-section');
@@ -1418,6 +1582,11 @@
                 // 스킬 바 애니메이션
                 if (target === 'skills') {
                     animateSkillBars();
+                }
+                // 지원 기업 목록 렌더링
+                if (target === 'saved-companies') {
+                    renderSavedList();
+                    renderWishlist();
                 }
             });
         });
